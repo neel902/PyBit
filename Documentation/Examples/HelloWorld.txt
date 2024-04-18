@@ -1,0 +1,32 @@
+_data
+REG out $0000
+LTR H h
+LTR E e
+LTR L l
+LTR O o
+LET SPACE 00000000
+LTR W w
+LTR R r
+LTR D d
+_start
+SET out H
+PRN out
+SET out E
+PRN out
+SET out L
+PRN out
+PRN out
+SET out O
+PRN out
+SET out SPACE
+PRN out
+SET out W
+PRN out
+SET out O
+PRN out
+SET out R
+PRN out
+SET out L
+PRN out
+SET out D
+PRL out
