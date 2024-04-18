@@ -36,3 +36,5 @@ _tick
 **PXL** {x} {y} {ColR:reg} {ColG:reg} {ColB:reg}
 
 ***+START SECTION***
+
+More details on [the wike](https://github.com/neel902/PyBit/wiki)
