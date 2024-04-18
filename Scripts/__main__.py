@@ -95,7 +95,8 @@ def run(codeRaw : str):
                 if i != "":
                     line = i.split(" ")
                     if line[0] == "pxl":
-                        disp[int(line[1]) + (150 * int(line[2]))] = (getReg(variables[line[2]][1:]), getReg(variables[line[3]][1:]), getReg(variables[line[4]][1:]))
+                        pos = int(line[2]) + 100 + (150 * (int(line[1])-1))
+                        disp[pos] = (getReg(variables[line[3]][1:]), getReg(variables[line[4]][1:]), getReg(variables[line[5]][1:]))
                     if line[0] == "add":
                         result = add(getReg(variables[line[1]][1:]), getReg(variables[line[2]][1:]))
                         setReg(variables[line[3]][1:], result[0])
@@ -159,7 +160,9 @@ if __name__ == "__main__":
     """
 _data
 REG out $0000
+REG red $0001
 DISP
 _tick
 SET out 11111111
-PXL 1 1 out out out""")
+SET red 00000000
+PXL 1 1 out red red""")

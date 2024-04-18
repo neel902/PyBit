@@ -8,7 +8,7 @@ class x8:
         return str(self.b1) + str(self.b2) + str(self.b3) + str(self.b4) + str(self.b5) + str(self.b6) + str(self.b7) + str(self.b8)
 
 memory = [x8(0,0,0,0,0,0,0,0) for i in range(2**4 - 1)]
-disp = [(x8(0,0,0,0,0,0,0,0), x8(0,0,0,0,0,0,0,0), x8(0,0,0,0,0,0,0,0)) for i in range(15000)]
+disp = [(x8(0,0,0,0,0,0,0,0), x8(0,0,0,0,0,0,0,0), x8(0,0,0,0,0,0,0,0)) for i in range(100 * 150)]
 binaryMem = [0 for i in range(2**8 - 1)]
 
 clock = x8(0,0,0,0,0,0,0,0)
