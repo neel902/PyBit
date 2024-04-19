@@ -37,4 +37,4 @@ _tick
 
 ***+START SECTION***
 
-More details on [the wike](https://github.com/neel902/PyBit/wiki)
+More details on [the wiki](https://github.com/neel902/PyBit/wiki)
