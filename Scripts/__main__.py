@@ -1,5 +1,6 @@
 from cpu import *
 from gpu import *
+from disks import *
 
 def run(codeRaw : str):
 
@@ -21,7 +22,7 @@ def run(codeRaw : str):
                 if line[0] == "disp":
                     display = gpu()
                 if line[0] == "let":
-                    variables[line[1]] = line[2]
+                    variables[line[1]] = line[2:]
                 if line[0] == "ltr":
                     index = CHARS.index(line[2])
                     indexBin = bin(index).replace("0b", "")
@@ -83,13 +84,22 @@ def run(codeRaw : str):
                     if l in variables.keys():
                         l = variables[l]
                     setReg(variables[line[1]][1:], x8(*[int(i) for i in l]))
+                if line[0] == "sset":
+                    l = " ".join(line[2:])
+                    if l in variables.keys():
+                        l = variables[l]
+                    
+                    setReg(variables[line[1]][1:], l)
                 if line[0] == "mov":
                     l = line[2]
                     setReg(variables[line[2]][1:], getReg(variables[line[1]][1:]))
+
+                if line[0] == "syscall":
+                        sysCall()
     
-    running = True
-    while running:
-        if updateSec:
+    if updateSec:
+        running = True
+        while running:
             update = updateSec.split("\n")
             for i in update:
                 if i != "":
@@ -147,22 +157,38 @@ def run(codeRaw : str):
                         if l in variables.keys():
                             l = variables[l]
                         setReg(variables[line[1]][1:], x8(*[int(i) for i in l]))
+                    if line[0] == "sset":
+                        l = "".join(line[2:])
+                        if l in variables.keys():
+                            l = variables[l]
+                        setReg(variables[line[1]][1:], l)
                     if line[0] == "mov":
                         l = line[2]
                         setReg(variables[line[2]][1:], getReg(variables[line[1]][1:]))
-                display.tick(disp)
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    running = False
+
+                    if line[0] == "syscall":
+                        sysCall()
+                if display: display.tick(disp)
+            if display:
+                for event in pygame.event.get():
+                    if event.type == pygame.QUIT:
+                        running = False
+    else:
+        pygame.quit()
 
 if __name__ == "__main__":
     run(
     """
 _data
-REG out $0000
-REG red $0001
-DISP
-_tick
-SET out 11111111
-SET red 00000000
-PXL 1 1 out red red""")
+REG rdi $rdi
+REG rax $rax
+_start
+SET rax 00000001
+SSET rdi Hello.txt
+SYSCALL
+SET rax 00000010
+SSET rdi Hello world
+SYSCALL
+SET rax 00000011
+SYSCALL
+""")

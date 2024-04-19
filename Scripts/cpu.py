@@ -1,4 +1,4 @@
-
+import disks
 
 class x8:
     """Standard format for all bytes in this CPU"""
@@ -6,6 +6,11 @@ class x8:
         self.b1, self.b2, self.b3, self.b4, self.b5, self.b6, self.b7, self.b8= b1, b2, b3, b4, b5, b6, b7, b8
     def __str__(self):
         return str(self.b1) + str(self.b2) + str(self.b3) + str(self.b4) + str(self.b5) + str(self.b6) + str(self.b7) + str(self.b8)
+    def __eq__(self, other):
+        if type(other) != type(x8()):
+            return False
+        else:
+            return str(self) == str(other)
 
 memory = [x8(0,0,0,0,0,0,0,0) for i in range(2**4 - 1)]
 disp = [(x8(0,0,0,0,0,0,0,0), x8(0,0,0,0,0,0,0,0), x8(0,0,0,0,0,0,0,0)) for i in range(100 * 150)]
@@ -13,6 +18,9 @@ binaryMem = [0 for i in range(2**8 - 1)]
 
 clock = x8(0,0,0,0,0,0,0,0)
 carry = 0
+
+rax = x8(0,0,0,0,0,0,0,0)
+rdi = ""
 
 CHARS = ' 0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!"£$%^&*()-+#~:;{}[]<>,./?\|`¬¦'
 
@@ -78,19 +86,31 @@ def x4to10(val):
     "1111" : 15}[val]
 
 def getReg(id : str):
+    global rax, rdi
     if id == "Clock":
         return clock
     elif id == "Carry":
         return carry
+    elif id == "rax":
+        return rax
+    elif id == "rdi":
+        return rdi
     else:
         return memory[x4to10(id)]
-def setReg(id : str, val : x8):
-    memory[x4to10(id)] = val
+    
+def setReg(id : str, val):
+    global rax, rdi
+    if id == "rax":
+        rax = val
+    elif id == "rdi":
+        rdi = val
+    else: memory[x4to10(id)] = val
 
 def getSection(name, code):
+    index1, index2 = -1, -1
     index1 = code.find(name) + len(name)
     index2 = code.find("_", index1)
-    if index1 != -1:
+    if index1 != len(name) - 1:
         if index2 != -1:
             return code[index1+1:index2]
         else:
@@ -99,3 +119,15 @@ def getSection(name, code):
 
 def x8ToNum(CODE):
     return CODE.b1 * 2**7 + CODE.b2 * 2**6 + CODE.b3 * 2**5 + CODE.b4 * 2**4 + CODE.b5 * 2**3 + CODE.b6 * 2**2 + CODE.b7 * 2 + CODE.b8
+
+file_descriptor = ""
+
+def sysCall():
+    global rax, rdi, file_descriptor
+    if rax == x8(0,0,0,0,0,0,0,1):
+        file_descriptor = rdi
+        print(file_descriptor)
+    if rax == x8(0,0,0,0,0,0,1,0):
+        disks.setFile(file_descriptor, rdi)
+    if rax == x8(0,0,0,0,0,0,1,1):
+        file_descriptor = ""
