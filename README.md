@@ -26,9 +26,11 @@ _start
 
 **NOT, AND, OR, XOR, NOR, NAND, XNOR** {out} {reg1} (reg2[optional])
 
-**SET/BSET** {reg} {value|bit}
+**SET/BSET/SSET** {reg} {value|bit|string}
 
 **MOV** {reg} {out}
+
+**SYSCALL** *-Used registries rax, rdi*
 
 ### UPDATE SECTION
 _tick
