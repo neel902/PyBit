@@ -1,5 +1,7 @@
+.test
+SSET rdi Hello
+OUT rdi
 _data
 REG rdi $rdi
 _start
-SSET rdi Hello
-OUT rdi
+call test

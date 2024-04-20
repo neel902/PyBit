@@ -106,16 +106,35 @@ def setReg(id : str, val):
         rdi = val
     else: memory[x4to10(id)] = val
 
-def getSection(name, code):
+def getSection(name, code : str):
     index1, index2 = -1, -1
     index1 = code.find(name) + len(name)
-    index2 = code.find("_", index1)
+    index21 = code.find("_", index1)
+    index22 = code.find(".", index1)
+    index2 = min(index21, index22)
     if index1 != len(name) - 1:
         if index2 != -1:
             return code[index1+1:index2]
         else:
             return code[index1+1:]
     return None
+
+def getFunctions(code : str) -> dict[str, str]:
+    index1, index2 = 0, 0
+    result = {}
+    while index1 != -1 and index2 != -1:
+        index1 = code.find(".", index2)
+        index21 = (code.find("_", index1+1))
+        index22 = (code.find(".", index1+1))
+        if index21 == -1: index2 = index22
+        elif index22 == -1: index2 = index21
+        else: index2 = min(index21, index22)
+        if index2 > 0 and index1 > 0:
+            func = code[index1:index2]
+            funcName = func.split("\n")[0]
+            funcCont = "\n".join(func.split("\n")[1:])[:-1]
+            result[funcName] = funcCont
+    return result
 
 def x8ToNum(CODE):
     return CODE.b1 * 2**7 + CODE.b2 * 2**6 + CODE.b3 * 2**5 + CODE.b4 * 2**4 + CODE.b5 * 2**3 + CODE.b6 * 2**2 + CODE.b7 * 2 + CODE.b8
