@@ -22,7 +22,7 @@ _start
 
 **SUB** {r1} {r2} {out}
 
-**OUT/BOUT/PRN/PRL** {reg(char_code)}
+**OUT/BOUT/PRN/PRL** {reg(char_code)(str)}
 
 **NOT, AND, OR, XOR, NOR, NAND, XNOR** {out} {reg1} (reg2[optional])
 

@@ -1,0 +1,5 @@
+_data
+REG rdi $rdi
+_start
+SSET rdi Hello
+OUT rdi

@@ -126,7 +126,6 @@ def sysCall():
     global rax, rdi, file_descriptor
     if rax == x8(0,0,0,0,0,0,0,1):
         file_descriptor = rdi
-        print(file_descriptor)
     if rax == x8(0,0,0,0,0,0,1,0):
         disks.setFile(file_descriptor, rdi)
     if rax == x8(0,0,0,0,0,0,1,1):

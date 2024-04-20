@@ -177,18 +177,7 @@ def run(codeRaw : str):
         pygame.quit()
 
 if __name__ == "__main__":
-    run(
-    """
-_data
-REG rdi $rdi
-REG rax $rax
-_start
-SET rax 00000001
-SSET rdi Hello.txt
-SYSCALL
-SET rax 00000010
-SSET rdi Hello world
-SYSCALL
-SET rax 00000011
-SYSCALL
-""")
+    real_path = os.path.realpath(__file__)
+    dir_path = os.path.dirname(real_path)
+    with open(dir_path + "\\ROM.pb8") as f:
+        run(f.read())
