@@ -2,6 +2,10 @@
 
 The PyBit is a VM written in completely python. It has its own instruction set, **PB8**, with all the necessary commands.
 
+## Usage
+
+First, install this repo. Then, you can edit the ROM.pb8 in scripts to program the VM
+
 ## Commands
 
 ### DATA SECTION
