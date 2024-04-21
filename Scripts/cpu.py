@@ -22,7 +22,8 @@ carry = 0
 rax = x8(0,0,0,0,0,0,0,0)
 rdi = ""
 
-CHARS = ' 0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!"£$%^&*()-+#~:;{}[]<>,./?\|`¬¦'
+
+CHARS = ' 0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!"£$%^&*()-+#~:;{}[]<>,./?\\|`¬¦\'\b\t\n\f\r '
 
 def badd(b1, b2, carry):
     result = 0
@@ -86,10 +87,10 @@ def x4to10(val):
     "1111" : 15}[val]
 
 def getReg(id : str):
-    global rax, rdi
-    if id == "Clock":
+    global rax, rdi, clock, carry, memory
+    if id == "clock":
         return clock
-    elif id == "Carry":
+    elif id == "carry":
         return carry
     elif id == "rax":
         return rax
@@ -99,11 +100,15 @@ def getReg(id : str):
         return memory[x4to10(id)]
     
 def setReg(id : str, val):
-    global rax, rdi
+    global rax, rdi, memory, clock, carry
     if id == "rax":
         rax = val
     elif id == "rdi":
         rdi = val
+    elif id == "clock":
+        clock = val
+    elif id == "carry":
+        carry = val
     else: memory[x4to10(id)] = val
 
 def getSection(name, code : str):
@@ -143,9 +148,12 @@ file_descriptor = ""
 
 def sysCall():
     global rax, rdi, file_descriptor
+    print(rdi)
     if rax == x8(0,0,0,0,0,0,0,1):
         file_descriptor = rdi
     if rax == x8(0,0,0,0,0,0,1,0):
         disks.setFile(file_descriptor, rdi)
     if rax == x8(0,0,0,0,0,0,1,1):
+        rdi = disks.getFile(file_descriptor)
+    if rax == x8(0,0,0,0,0,1,0,0):
         file_descriptor = ""

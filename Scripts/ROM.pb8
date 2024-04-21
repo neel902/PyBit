@@ -1,7 +1,23 @@
 .test
 SSET rdi Hello
 OUT rdi
+SET b 01111110
+SET d 00000001
+.up
+ADD c d c
+.out
+exit
 _data
 REG rdi $rdi
+REG a $0000
+REG time $clock
+REG b $0001
+REG c $0010
+REG d $0011
 _start
 call test
+_tick
+key a
+out a
+if> time b up
+if> c b out

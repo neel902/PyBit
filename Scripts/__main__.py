@@ -1,6 +1,9 @@
 from cpu import *
 from gpu import *
 from disks import *
+import keyboard
+import time
+import sys
 
 variables = {}
 functions = {}
@@ -13,15 +16,58 @@ def call(name):
             line = i.split(" ")
             sec(line)
 
+import keyboard
+
+lastKey = "space"
+
+def on_key_event(event):
+    global lastKey
+    lastKey = event.name
+
+def currentKey():
+    global lastKey
+    try:
+        if keyboard.is_pressed(lastKey):
+            indexBin = bin(CHARS.find(lastKey)).replace("0b", "")
+            indexBin = "0" * (8 - len(indexBin)) + indexBin
+            return x8(int(indexBin[-8]),int(indexBin[-7]),int(indexBin[-6]),int(indexBin[-5]),int(indexBin[-4]),int(indexBin[-3]),int(indexBin[-2]),int(indexBin[-1]))
+        else:
+            return x8()
+    except:
+        return x8()
+
+keyboard.on_press(on_key_event)
+
 def sec(line):
-    global variables, functions
+    global variables, functions, clock
+    if line[0] == "var":
+        variables[line[1]] == line[2]
+    if line[0] == "inp":
+        binaryMem[variables[line[1]]] == input("1|0")
+    if line[0] == "key":
+        setReg(variables[line[1]][1:], currentKey())
     if line[0] == "call":
         call(line[1])
-
+    if line[0] == "if":
+        if binaryMem[int(variables[line[1]][1:])] == 1:
+            call(line[2])
+        elif line[3] == "else":
+            call(line[4])
+    if line[0] == "if>":
+        if x8ToNum(getReg((variables[line[1]][1:]))) > x8ToNum(getReg((variables[line[2]][1:]))):
+            call(line[3])
+    if line[0] == "if<":
+        if x8ToNum(getReg((variables[line[1]][1:]))) < x8ToNum(getReg((variables[line[2]][1:]))):
+            call(line[3])
+    if line[0] == "if=":
+        if x8ToNum(getReg((variables[line[1]][1:]))) == x8ToNum(getReg((variables[line[2]][1:]))):
+            call(line[3])
+    if line[0] == "exit":
+        sys.exit()
     if line[0] == "add":
         result = add(getReg(variables[line[1]][1:]), getReg(variables[line[2]][1:]))
         setReg(variables[line[3]][1:], result[0])
-        carry = result[1]
+        setReg("carry", result[1])
     if line[0] == "sub":
         result = sub(getReg(variables[line[1]][1:]), getReg(variables[line[2]][1:]))
         setReg(variables[line[3]][1:], result)
@@ -85,7 +131,7 @@ def sec(line):
         disp[pos] = (getReg(variables[line[3]][1:]), getReg(variables[line[4]][1:]), getReg(variables[line[5]][1:]))
 
 def run(codeRaw : str):
-    global variables, functions
+    global variables, functions, clock
     display = None
 
     code = codeRaw.lower()
@@ -127,7 +173,10 @@ def run(codeRaw : str):
                 if i != "":
                     line = i.split(" ")
                     
-                    sec()
+                    sec(line)
+                    setReg("clock", add(getReg("clock"), x8(0,0,0,0,0,0,0,1))[0])
+                    if line[0] == "break":
+                        running = False
                 if display: display.tick(disp)
             if display:
                 for event in pygame.event.get():
