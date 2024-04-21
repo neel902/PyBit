@@ -4,7 +4,7 @@ The PyBit is a VM written in completely python. It has its own instruction set, 
 
 ## Usage
 
-First, install this repo. Then, you can edit the ROM.pb8 in scripts to program the VM
+First, install this repo. Then, you can edit the ROM.pb8 in scripts to program the VM, or set 'run_py_bit.pb8.bat' as your default for .pb8 files
 
 ## Commands
 
@@ -18,7 +18,6 @@ _data
 **LET** {name} {value} *- Create a variable*
 
 **LTR** {name} {lowercase letter} *- Access the binary code of a lowercase letter or other supported character*
-
 ### START SECTION
 _start
 
