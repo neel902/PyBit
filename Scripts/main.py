@@ -43,7 +43,10 @@ def sec(line):
     if line[0] == "var":
         variables[line[1]] == line[2]
     if line[0] == "inp":
-        binaryMem[variables[line[1]]] == input("1|0")
+        binaryMem[variables[line[1]]] = input("1|0")
+    if line[0] == "md": 
+        binaryMem[variables[line[1]]] = pygame.MOUSEBUTTONDOWN
+    
     if line[0] == "key":
         setReg(variables[line[1]][1:], currentKey())
     if line[0] == "call":
