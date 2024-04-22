@@ -43,10 +43,19 @@ def sec(line):
     if line[0] == "var":
         variables[line[1]] == line[2]
     if line[0] == "inp":
-        binaryMem[variables[line[1]]] = input("1|0")
+        binaryMem[int(variables[line[1]][1:])] = input("1|0")
     if line[0] == "md": 
-        binaryMem[variables[line[1]]] = pygame.MOUSEBUTTONDOWN
-    
+        binaryMem[int(variables[line[1]][1:])] = 1 if pygame.mouse.get_pressed()[0] else 0
+    if line[0] == "mpx":
+        x = int(pygame.mouse.get_pos()[0]/2)
+        xBin = bin(x).replace("0b", "")
+        xBin = "0" * (8 - len(xBin)) + xBin
+        setReg(variables[line[1]][1:], x8(*[int(i) for i in xBin]))
+    if line[0] == "mpy":
+        y = int(pygame.mouse.get_pos()[1]/2)
+        yBin = bin(y).replace("0b", "")
+        yBin = "0" * (8 - len(yBin)) + yBin
+        setReg(variables[line[1]][1:], x8(*[int(i) for i in yBin]))
     if line[0] == "key":
         setReg(variables[line[1]][1:], currentKey())
     if line[0] == "call":

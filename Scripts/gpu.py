@@ -16,7 +16,7 @@ class gpu:
                 i += 1
                 Color = (cpu.x8ToNum(screen[i][0]),cpu.x8ToNum(screen[i][1]),cpu.x8ToNum(screen[i][2]))
                 pygame.draw.circle(self.screen, Color, (x*2, y*2), 2, 2)
-        pygame.display.flip()
+        pygame.display.flip() 
 
 def randomCol():
     return (cpu.x8(random.randint(0,1),random.randint(0,1),random.randint(0,1),random.randint(0,1),random.randint(0,1),random.randint(0,1),random.randint(0,1),random.randint(0,1)),cpu.x8(random.randint(0,1),random.randint(0,1),random.randint(0,1),random.randint(0,1),random.randint(0,1),random.randint(0,1),random.randint(0,1),random.randint(0,1)),cpu.x8(random.randint(0,1),random.randint(0,1),random.randint(0,1),random.randint(0,1),random.randint(0,1),random.randint(0,1),random.randint(0,1),random.randint(0,1)))

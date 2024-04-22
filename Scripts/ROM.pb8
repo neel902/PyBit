@@ -9,15 +9,16 @@ ADD c d c
 exit
 _data
 REG rdi $rdi
-REG a $0000
+REG a $0001
 REG time $clock
 REG b $0001
 REG c $0010
 REG d $0011
+DISP
 _start
 call test
 _tick
-key a
+mpx a
 out a
-if> time b up
-if> c b out
+mpy a
+out a
