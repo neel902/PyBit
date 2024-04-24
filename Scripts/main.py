@@ -39,7 +39,7 @@ def currentKey():
 keyboard.on_press(on_key_event)
 
 def sec(line):
-    global variables, functions, clock
+    global variables, functions, clock, display
     if line[0] == "var":
         variables[line[1]] == line[2]
     if line[0] == "inp":
@@ -131,7 +131,7 @@ def sec(line):
         if l in variables.keys():
             l = variables[l]
         
-        setReg(variables[line[1]][1:], l)
+        setReg(variables[line[1]][1:].strip(), l)
     if line[0] == "mov":
         l = line[2]
         setReg(variables[line[2]][1:], getReg(variables[line[1]][1:]))
@@ -141,6 +141,22 @@ def sec(line):
     if line[0] == "pxl":
         pos = int(line[2]) + 100 + (150 * (int(line[1])-1))
         disp[pos] = (getReg(variables[line[3]][1:]), getReg(variables[line[4]][1:]), getReg(variables[line[5]][1:]))
+    if line[0] == "img":
+        imgData = getReg("rdi")
+        #imgData =  "2-2-11111111-00000000-00000000-11111111-00000000-00000000-00000000-11111111-00000000-00000000-00000000-11111111"
+        imgData = imgData.split("-")
+        pos = 0
+        offset = 0
+        origin = int(line[2]) + 100 + (150 * (int(line[1])-1))
+        for x in range(int(imgData[0])):
+            for y in range(int(imgData[1])):
+                pos += 1
+                offset += 1
+                Col1 = x8(*[int(i) for i in imgData[-1+pos*3]])
+                Col2 = x8(*[int(i) for i in str(int(imgData[0+pos*3]))])
+                Col3 = x8(*[int(i) for i in str(int(imgData[1+pos*3]))])
+                disp[offset+origin] = (Col1, Col2, Col3)
+            offset += 100 - y-1
 
 def run(codeRaw : str):
     global variables, functions, clock
