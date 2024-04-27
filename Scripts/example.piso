@@ -1,0 +1,8 @@
+files={"test.txt": "Hello, world!"}
+rom="""
+_data
+reg rdi rdi
+_start
+SSET rdi Hello world!
+OUT rdi\n
+"""
