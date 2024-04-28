@@ -1,6 +1,6 @@
 
 _data
-reg rdi rdi
+reg rdi $rdi
 _start
 SSET rdi Hello world!
 OUT rdi
