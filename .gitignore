@@ -2,3 +2,7 @@ Scripts/__pycache__/cpu.cpython-310.pyc
 Scripts/__pycache__/disks.cpython-310.pyc
 Scripts/__pycache__/gpu.cpython-310.pyc
 Scripts/__pycache__/main.cpython-310.pyc
+Disk editer/__pycache__/copy_files.cpython-310.pyc
+Disk editer/__pycache__/file_extensions.cpython-310.pyc
+Disk editer/__pycache__/files.cpython-310.pyc
+Disk editer/__pycache__/getFiles.cpython-310.pyc

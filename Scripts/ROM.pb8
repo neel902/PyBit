@@ -1,7 +1,8 @@
 
 _data
-reg rdi $rdi
-_start
-SSET rdi Hello world!
-OUT rdi
-
+DISP
+REG r $0001
+REG g $0010
+REG b $0011
+_tick
+PXL 5 5 r g b

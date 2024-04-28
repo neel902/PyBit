@@ -143,8 +143,7 @@ def sec(line):
         disp[pos] = (getReg(variables[line[3]][1:]), getReg(variables[line[4]][1:]), getReg(variables[line[5]][1:]))
     if line[0] == "img":
         imgData = getReg("rdi")
-        #imgData =  "2-2-11111111-00000000-00000000-11111111-00000000-00000000-00000000-11111111-00000000-00000000-00000000-11111111"
-        imgData = imgData.split("-")
+        imgData = imgData.replace("\n", "").replace(" ", "").split("-")
         pos = 0
         offset = 0
         origin = int(line[2]) + 100 + (150 * (int(line[1])-1))
