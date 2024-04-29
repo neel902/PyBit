@@ -146,14 +146,20 @@ def sec(line):
         imgData = imgData.replace("\n", "").replace(" ", "").split("-")
         pos = 0
         offset = 0
-        origin = int(line[2]) + 100 + (150 * (int(line[1])-1))
+        sx = line[1]
+        sy = line[2]
+        if sx in variables:
+            sx = x8ToNum(getReg(variables[sx][1:]))
+        if sy in variables:
+            sy = x8ToNum(getReg(variables[sy][1:]))
+        origin = int(sy) + 100 + (150 * (int(sx)-1))
         for x in range(int(imgData[0])):
             for y in range(int(imgData[1])):
                 pos += 1
                 offset += 1
                 Col1 = x8(*[int(i) for i in imgData[-1+pos*3]])
-                Col2 = x8(*[int(i) for i in str(int(imgData[0+pos*3]))])
-                Col3 = x8(*[int(i) for i in str(int(imgData[1+pos*3]))])
+                Col2 = x8(*[int(i) for i in imgData[pos*3]])
+                Col3 = x8(*[int(i) for i in imgData[1+pos*3]])
                 disp[offset+origin] = (Col1, Col2, Col3)
             offset += 100 - y-1
 
