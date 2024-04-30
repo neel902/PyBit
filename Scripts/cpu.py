@@ -148,7 +148,6 @@ file_descriptor = ""
 
 def sysCall():
     global rax, rdi, file_descriptor
-    print(rdi)
     if rax == x8(0,0,0,0,0,0,0,1):
         file_descriptor = rdi
     if rax == x8(0,0,0,0,0,0,1,0):

@@ -10,7 +10,7 @@ def setClipboard(text : str) -> None:
 def n255to8(num):
     num = int(num/2)
     num = bin(num).replace("0b","")
-    numBin = "0" * (8 - len(num)) + num
+    numBin = "0" * (7 - len(num)) + num
     return numBin
 
 imgPath = input("Path to image: ")
@@ -27,10 +27,22 @@ image = image.convert('RGB')
 # Get the RGB values as a list of tuples
 rgb_list = list(image.getdata())
 
-# If you want to further convert the list to a flat list of RGB values
-flat_rgb_list = "-".join([n255to8(rgb) for pixel in rgb_list for rgb in pixel])
+flat_rgb_list = ""
 
-flat_rgb_list = f"{str(image.size[0])}-{str(image.size[1])}-{flat_rgb_list}"
+# If you want to further convert the list to a flat list of RGB values
+last_rgb = (-1,-1,-1)
+count = 0
+for i in rgb_list:
+    if i == last_rgb:
+        count += 1
+    else:
+        if last_rgb != (-1, -1, -1):
+            flat_rgb_list += f"{count}*{n255to8(last_rgb[0])},{n255to8(last_rgb[1])},{n255to8(last_rgb[2])}-"
+        count = 1
+        last_rgb  = i
+
+flat_rgb_list += f"{count}*{n255to8(last_rgb[0])},{n255to8(last_rgb[1])},{n255to8(last_rgb[2])}-"
+flat_rgb_list = f"{str(image.size[0])}-{str(image.size[1])}-{flat_rgb_list[:-1]}"
 
 print(flat_rgb_list)
 setClipboard(flat_rgb_list)

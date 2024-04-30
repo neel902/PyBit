@@ -29,7 +29,7 @@ def currentKey():
     try:
         if keyboard.is_pressed(lastKey):
             indexBin = bin(CHARS.find(lastKey)).replace("0b", "")
-            indexBin = "0" * (8 - len(indexBin)) + indexBin
+            indexBin = "0" * (7 - len(indexBin)) + indexBin
             return x8(int(indexBin[-8]),int(indexBin[-7]),int(indexBin[-6]),int(indexBin[-5]),int(indexBin[-4]),int(indexBin[-3]),int(indexBin[-2]),int(indexBin[-1]))
         else:
             return x8()
@@ -49,12 +49,12 @@ def sec(line):
     if line[0] == "mpx":
         x = int(pygame.mouse.get_pos()[0]/2)
         xBin = bin(x).replace("0b", "")
-        xBin = "0" * (8 - len(xBin)) + xBin
+        xBin = "0" * (7 - len(xBin)) + xBin
         setReg(variables[line[1]][1:], x8(*[int(i) for i in xBin]))
     if line[0] == "mpy":
         y = int(pygame.mouse.get_pos()[1]/2)
         yBin = bin(y).replace("0b", "")
-        yBin = "0" * (8 - len(yBin)) + yBin
+        yBin = "0" * (7 - len(yBin)) + yBin
         setReg(variables[line[1]][1:], x8(*[int(i) for i in yBin]))
     if line[0] == "key":
         setReg(variables[line[1]][1:], currentKey())
@@ -139,11 +139,21 @@ def sec(line):
     if line[0] == "syscall":
         sysCall()
     if line[0] == "pxl":
-        pos = int(line[2]) + 100 + (150 * (int(line[1])-1))
+        pos = int(line[1]) + (150 * (int(line[2]))) - 1
         disp[pos] = (getReg(variables[line[3]][1:]), getReg(variables[line[4]][1:]), getReg(variables[line[5]][1:]))
     if line[0] == "img":
-        imgData = getReg("rdi")
-        imgData = imgData.replace("\n", "").replace(" ", "").split("-")
+        OimgData = getReg("rdi")
+        OimgData = OimgData.replace("\n", "").replace(" ", "").split("-")
+        imgData = [OimgData[0], OimgData[1]]
+        OimgData = OimgData[2:]
+        for i in OimgData:
+            split = i.split("*")
+            times = split[0]
+            rgb = split[1].split(",")
+            for i in range(int(times)):
+                imgData.append(rgb[0])
+                imgData.append(rgb[1])
+                imgData.append(rgb[2])
         pos = 0
         offset = 0
         sx = line[1]
@@ -152,7 +162,7 @@ def sec(line):
             sx = x8ToNum(getReg(variables[sx][1:]))
         if sy in variables:
             sy = x8ToNum(getReg(variables[sy][1:]))
-        origin = int(sy) + 100 + (150 * (int(sx)-1))
+        origin = int(sx) + (150 * (int(sy))) - 1
         for x in range(int(imgData[0])):
             for y in range(int(imgData[1])):
                 pos += 1
@@ -160,8 +170,9 @@ def sec(line):
                 Col1 = x8(*[int(i) for i in imgData[-1+pos*3]])
                 Col2 = x8(*[int(i) for i in imgData[pos*3]])
                 Col3 = x8(*[int(i) for i in imgData[1+pos*3]])
-                disp[offset+origin] = (Col1, Col2, Col3)
-            offset += 100 - y-1
+                if (len(disp) > origin+offset):
+                    disp[offset+origin] = (Col1, Col2, Col3)
+            offset += 150 - y - 1
 
 def run(codeRaw : str):
     global variables, functions, clock
@@ -187,7 +198,7 @@ def run(codeRaw : str):
                 if line[0] == "ltr":
                     index = CHARS.index(line[2])
                     indexBin = bin(index).replace("0b", "")
-                    indexBin = "0" * (8 - len(indexBin)) + indexBin
+                    indexBin = "0" * (7 - len(indexBin)) + indexBin
                     variables[line[1]] = indexBin
     #START
     if startSec:
