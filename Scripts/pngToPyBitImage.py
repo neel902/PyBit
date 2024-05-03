@@ -42,7 +42,7 @@ for i in rgb_list:
         last_rgb  = i
 
 flat_rgb_list += f"{count}*{n255to8(last_rgb[0])},{n255to8(last_rgb[1])},{n255to8(last_rgb[2])}-"
-flat_rgb_list = f"{str(image.size[0])}-{str(image.size[1])}-{flat_rgb_list[:-1]}"
+flat_rgb_list = f"{str(image.size[1])}-{str(image.size[0])}-{flat_rgb_list[:-1]}"
 
 print(flat_rgb_list)
 setClipboard(flat_rgb_list)

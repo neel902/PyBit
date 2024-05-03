@@ -1,3 +1,15 @@
+.tick
+MOV bg rdi
+IMG 1 1
+MOV car rdi
+IMG pos 60
+KEY kd
+IF= kd a right
+IF= kd d left
+.left
+ADD pos const pos 
+.right
+SUB pos const pos
 .load
 SET rax 00000001
 SYSCALL
@@ -6,13 +18,27 @@ SYSCALL
 SET rax 00000100
 SYSCALL
 _data
-DISP
 REG rax $rax
 REG rdi $rdi
-REG x $0000
-REG y $0001
+REG bg $0000
+REG car $0010
+REG const $0001
+REG clock $clock
+REG pos $0100
+REG kd $0111
+REG a $1001
+REG d $1010
+LTR a a
+LTR d d
+DISP
+_start
+SET pos 01001011
+SET const 00000100
+SSET rdi /assets/bg/frame1-img
+CALL load
+MOV rdi bg
+SSET rdi /assets/car/frame1-img
+CALL load
+MOV rdi car
 _tick
-SSET rdi /assets/frame1.img
-call load
-IMG 1 1
-SET y 11111111
+CALL tick

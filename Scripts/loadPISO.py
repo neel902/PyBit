@@ -14,7 +14,7 @@ rom = ""
 
 try:
     f = open(path, "r")
-    exec(f.read(), {"files" : files, "rom" : rom, "ROM" : rom})
+    exec(f.read())
 except Exception as e:
     sys.exit(e)
 finally:

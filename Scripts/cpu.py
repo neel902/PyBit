@@ -53,7 +53,8 @@ def add(by1 : x8, by2 : x8, carry = 0):
     return x8(r1[0], r2[0], r3[0], r4[0], r5[0], r6[0], r7[0], r8[0]), r1[1]
 
 def sub(by1 : x8, by2 : x8):
-    by2Neg = by2
+
+    by2Neg = x8(by2.b1, by2.b2, by2.b3, by2.b4, by2.b5, by2.b6, by2.b7, by2.b8)
     index = str(by2).find("1")
     if index == -1: return add(by1, x8())
     elif index == 0: return add(by1, by2)

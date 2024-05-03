@@ -29,7 +29,7 @@ def currentKey():
     try:
         if keyboard.is_pressed(lastKey):
             indexBin = bin(CHARS.find(lastKey)).replace("0b", "")
-            indexBin = "0" * (7 - len(indexBin)) + indexBin
+            indexBin = "0" * (8 - len(indexBin)) + indexBin
             return x8(int(indexBin[-8]),int(indexBin[-7]),int(indexBin[-6]),int(indexBin[-5]),int(indexBin[-4]),int(indexBin[-3]),int(indexBin[-2]),int(indexBin[-1]))
         else:
             return x8()
@@ -72,7 +72,7 @@ def sec(line):
         if x8ToNum(getReg((variables[line[1]][1:]))) < x8ToNum(getReg((variables[line[2]][1:]))):
             call(line[3])
     if line[0] == "if=":
-        if x8ToNum(getReg((variables[line[1]][1:]))) == x8ToNum(getReg((variables[line[2]][1:]))):
+        if x8ToNum(getReg((variables[line[1]][1:]))) == int(str(getReg((variables[line[2]][1:]))), 2):
             call(line[3])
     if line[0] == "exit":
         sys.exit()
@@ -82,6 +82,8 @@ def sec(line):
         setReg("carry", result[1])
     if line[0] == "sub":
         result = sub(getReg(variables[line[1]][1:]), getReg(variables[line[2]][1:]))
+        if type(result) ==  type((1, 1)):
+            result = result[0]
         setReg(variables[line[3]][1:], result)
     if line[0] == "out":
         print(getReg(variables[line[1]][1:]))
@@ -170,7 +172,7 @@ def sec(line):
                 Col1 = x8(*[int(i) for i in imgData[-1+pos*3]])
                 Col2 = x8(*[int(i) for i in imgData[pos*3]])
                 Col3 = x8(*[int(i) for i in imgData[1+pos*3]])
-                if (len(disp) > origin+offset):
+                if (len(disp) > origin+offset) and (x8ToNum(Col1) + x8ToNum(Col2) + x8ToNum(Col3)) > 3:
                     disp[offset+origin] = (Col1, Col2, Col3)
             offset += 150 - y - 1
 
@@ -198,8 +200,8 @@ def run(codeRaw : str):
                 if line[0] == "ltr":
                     index = CHARS.index(line[2])
                     indexBin = bin(index).replace("0b", "")
-                    indexBin = "0" * (7 - len(indexBin)) + indexBin
-                    variables[line[1]] = indexBin
+                    indexBin = "0" * (8 - len(indexBin)) + indexBin
+                    setReg(variables[line[1]][1:], x8(*[str(i) for i in indexBin]))
     #START
     if startSec:
         

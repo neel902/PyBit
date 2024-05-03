@@ -17,7 +17,7 @@ class gpu:
                 
                 Color = (cpu.x8ToNum(screen[i][0]),cpu.x8ToNum(screen[i][1]),cpu.x8ToNum(screen[i][2]))
                 
-                if Color != (0, 0, 0):
+                if (Color[0] + Color[1] + Color[2]) > 3:
                     pygame.draw.circle(self.screen, Color, ((x*2), (y*2)), 2, 150)
                     pygame.draw.circle(self.screen, Color, ((x*2), (y*2)+1), 2, 150)
                     pygame.draw.circle(self.screen, Color, ((x*2)+1, (y*2)), 2, 150)
