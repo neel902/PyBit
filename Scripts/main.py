@@ -91,7 +91,7 @@ def sec(line):
         result = add(getReg(variables[line[1]][1:]), getReg(variables[line[2]][1:]))
         setReg(variables[line[3]][1:], result[0])
         setReg("carry", result[1])
-    if line[0] == "add":
+    if line[0] == "mul":
         result = mul(getReg(variables[line[1]][1:]), getReg(variables[line[2]][1:]))
         setReg(variables[line[3]][1:], result[0])
         setReg("carry", result[1])
