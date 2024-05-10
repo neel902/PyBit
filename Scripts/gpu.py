@@ -1,4 +1,6 @@
 import cpu
+import os
+os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
 import pygame
 import random
 
@@ -8,6 +10,7 @@ class gpu:
         self.screen = pygame.display.set_mode((self.width, self.height))
         pygame.display.flip()
         pygame.display.set_caption("PyBit x8 GPU")
+        print("\033[32;1mSuccesfully started PyBit x8 GPU\033[0m")
 
     def tick(self, screen : list[cpu.x8]):
         i = -1

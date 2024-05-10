@@ -40,6 +40,11 @@ keyboard.on_press(on_key_event)
 
 def sec(line):
     global variables, functions, clock, display
+    if line[0] == "run":
+        _hash = genHash()
+        functions[f".{_hash}"] = getReg("rdi")
+        call(_hash)
+        functions[f".{_hash}"] = "data destroyed"
     if line[0] == "var":
         variables[line[1]] == line[2]
     if line[0] == "inp":
@@ -49,12 +54,12 @@ def sec(line):
     if line[0] == "mpx":
         x = int(pygame.mouse.get_pos()[0]/2)
         xBin = bin(x).replace("0b", "")
-        xBin = "0" * (7 - len(xBin)) + xBin
+        xBin = "0" * (8 - len(xBin)) + xBin
         setReg(variables[line[1]][1:], x8(*[int(i) for i in xBin]))
     if line[0] == "mpy":
         y = int(pygame.mouse.get_pos()[1]/2)
         yBin = bin(y).replace("0b", "")
-        yBin = "0" * (7 - len(yBin)) + yBin
+        yBin = "0" * (8 - len(yBin)) + yBin
         setReg(variables[line[1]][1:], x8(*[int(i) for i in yBin]))
     if line[0] == "key":
         setReg(variables[line[1]][1:], currentKey())
@@ -71,6 +76,12 @@ def sec(line):
     if line[0] == "if<":
         if x8ToNum(getReg((variables[line[1]][1:]))) < x8ToNum(getReg((variables[line[2]][1:]))):
             call(line[3])
+    if line[0] == "ife":
+        if x8ToNum(getReg((variables[line[1]][1:]))) % 2 == 0:
+            call(line[2])
+    if line[0] == "ifo":
+        if x8ToNum(getReg((variables[line[1]][1:]))) % 2 == 1:
+            call(line[2])
     if line[0] == "if=":
         if x8ToNum(getReg((variables[line[1]][1:]))) == int(str(getReg((variables[line[2]][1:]))), 2):
             call(line[3])
@@ -78,6 +89,10 @@ def sec(line):
         sys.exit()
     if line[0] == "add":
         result = add(getReg(variables[line[1]][1:]), getReg(variables[line[2]][1:]))
+        setReg(variables[line[3]][1:], result[0])
+        setReg("carry", result[1])
+    if line[0] == "add":
+        result = mul(getReg(variables[line[1]][1:]), getReg(variables[line[2]][1:]))
         setReg(variables[line[3]][1:], result[0])
         setReg("carry", result[1])
     if line[0] == "sub":
@@ -231,8 +246,24 @@ def run(codeRaw : str):
     else:
         pygame.quit()
 
+def cleanup(reduced_debug=True) -> None:
+    global variables, functions
+    if not reduced_debug:
+        print("=" * 32)
+        print("Clearing variables")
+    variables.clear()
+    if not reduced_debug:
+        print("\033[32;1mDone\033[0m")
+    if not reduced_debug:
+        print("Clearing functions")
+    functions.clear()
+    if not reduced_debug:
+        print("\033[32;1mDone\033[0m")
+
 if __name__ == "__main__":
+    BIOS()
     real_path = os.path.realpath(__file__)
     dir_path = os.path.dirname(real_path)
     with open(dir_path + "\\ROM.pb8") as f:
         run(f"\n{f.read()}\n")
+    cleanup(reduced_debug=False)

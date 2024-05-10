@@ -1,4 +1,5 @@
 import disks
+import random
 
 class x8:
     """Standard format for all bytes in this CPU"""
@@ -11,9 +12,12 @@ class x8:
             return False
         else:
             return str(self) == str(other)
+        
+def x8ToNum(CODE):
+    return CODE.b1 * 2**7 + CODE.b2 * 2**6 + CODE.b3 * 2**5 + CODE.b4 * 2**4 + CODE.b5 * 2**3 + CODE.b6 * 2**2 + CODE.b7 * 2 + CODE.b8
 
-memory = [x8(0,0,0,0,0,0,0,0) for i in range(2**4 - 1)]
-disp = [(x8(0,0,0,0,0,0,0,0), x8(0,0,0,0,0,0,0,0), x8(0,0,0,0,0,0,0,0)) for i in range(100 * 150)]
+memory = [x8(0,0,0,0,0,0,0,0) for i in range(128)]
+disp = [(x8(0,0,0,0,0,0,0,0), x8(0,0,0,0,0,0,0,0), x8(0,0,0,0,0,0,0,0)) for _ in range(100 * 150)]
 binaryMem = [0 for i in range(2**8 - 1)]
 
 clock = x8(0,0,0,0,0,0,0,0)
@@ -22,8 +26,28 @@ carry = 0
 rax = x8(0,0,0,0,0,0,0,0)
 rdi = ""
 
+VERSION = "alpha 0.0.4"
+"""The version"""
+LICENSE = "MIT License"
+"""The license"""
+WELCOME_MSG = """\033[33;1;4mPyBit x8 ($version)\033[0m
+\033[1m$license\033[0m"""
+"""The message to be displayed in the bios
+
+`$version` will be replaced with the version and `$license` will be replaced with the license
+
+Supports ASCII colour codes (`\\033[XXXm`)"""
+def BIOS() -> None:
+    print(WELCOME_MSG.replace("$version", VERSION).replace("$license", LICENSE))
 
 CHARS = ' 0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!"£$%^&*()-+#~:;{}[]<>,./?\\|`¬¦\'\b\t\n\f\r '
+
+def genHash() -> str:
+    _hashChars = "01234567890123456789qwertyuiopasdfghjklzxcvbnm!\"£$%^&*()"
+    _hash = ""
+    for _ in range(16):
+        _hash += _hashChars[random.randint(0, len(_hashChars))]
+    return _hash
 
 def badd(b1, b2, carry):
     result = 0
@@ -87,6 +111,13 @@ def x4to10(val):
     "1110" : 14,
     "1111" : 15}[val]
 
+def mul(by1 : x8, by2 : x8):
+    result = x8(0,0,0,0,0,0,0,0)
+    for _ in range(x8ToNum(by2)):
+        result = add(result, by1)[0]
+    
+    return result
+
 def getReg(id : str):
     global rax, rdi, clock, carry, memory
     if id == "clock":
@@ -142,9 +173,6 @@ def getFunctions(code : str) -> dict[str, str]:
             result[funcName] = funcCont
     return result
 
-def x8ToNum(CODE):
-    return CODE.b1 * 2**7 + CODE.b2 * 2**6 + CODE.b3 * 2**5 + CODE.b4 * 2**4 + CODE.b5 * 2**3 + CODE.b6 * 2**2 + CODE.b7 * 2 + CODE.b8
-
 file_descriptor = ""
 
 def sysCall():
@@ -157,3 +185,9 @@ def sysCall():
         rdi = disks.getFile(file_descriptor)
     if rax == x8(0,0,0,0,0,1,0,0):
         file_descriptor = ""
+
+def main() -> None:
+    BIOS()
+
+if __name__ == "__main__":
+    main()

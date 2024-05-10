@@ -1,8 +1,17 @@
+
+:: methods for frames
+.frame1
+MOV bg1 rdi
+.frame2
+MOV bg2 rdi
+:: called every tick
 .tick
-MOV bg rdi
+IFE clock frame1
+IFO clock frame2
 IMG 1 1
 MOV car rdi
 IMG pos 60
+:: movement
 KEY kd
 IF= kd a right
 IF= kd d left
@@ -10,6 +19,7 @@ IF= kd d left
 ADD pos const pos 
 .right
 SUB pos const pos
+:: load a file
 .load
 SET rax 00000001
 SYSCALL
@@ -17,11 +27,14 @@ SET rax 00000011
 SYSCALL
 SET rax 00000100
 SYSCALL
+:: data section
 _data
 REG rax $rax
 REG rdi $rdi
-REG bg $0000
+REG bg1 $0000
+REG bg2 $1111
 REG car $0010
+:: speed
 REG const $0001
 REG clock $clock
 REG pos $0100
@@ -31,14 +44,19 @@ REG d $1010
 LTR a a
 LTR d d
 DISP
+:: start section
 _start
 SET pos 01001011
 SET const 00000100
 SSET rdi /assets/bg/frame1-img
 CALL load
-MOV rdi bg
+MOV rdi bg1
+SSET rdi /assets/bg/frame2-img
+CALL load
+MOV rdi bg2
 SSET rdi /assets/car/frame1-img
 CALL load
 MOV rdi car
+:: tick section
 _tick
 CALL tick
