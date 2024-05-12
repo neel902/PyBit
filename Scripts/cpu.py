@@ -118,6 +118,14 @@ def mul(by1 : x8, by2 : x8):
     
     return result
 
+def shift(byte : x8, dir : str | None = None):
+    """Use LEFT or RIGHT"""
+    if dir == None:
+        return byte
+    if dir == "LEFT":
+        return mul(byte, x8(0,0,0,0,0,0,1,0))
+    return x8(0, byte.b1, byte.b2, byte.b3, byte.b4, byte.b5, byte.b6, byte.b7)
+
 def getReg(id : str):
     global rax, rdi, clock, carry, memory
     if id == "clock":
