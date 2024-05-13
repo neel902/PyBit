@@ -16,9 +16,12 @@ class x8:
 def x8ToNum(CODE):
     return CODE.b1 * 2**7 + CODE.b2 * 2**6 + CODE.b3 * 2**5 + CODE.b4 * 2**4 + CODE.b5 * 2**3 + CODE.b6 * 2**2 + CODE.b7 * 2 + CODE.b8
 
-memory = [x8(0,0,0,0,0,0,0,0) for i in range(128)]
+memLen = 2**4
+binMemLen = 2**8
+
+memory = [x8(0,0,0,0,0,0,0,0) for i in range(memLen)]
 disp = [(x8(0,0,0,0,0,0,0,0), x8(0,0,0,0,0,0,0,0), x8(0,0,0,0,0,0,0,0)) for _ in range(100 * 150)]
-binaryMem = [0 for i in range(2**8 - 1)]
+binaryMem = [0 for i in range(binMemLen)]
 
 clock = x8(0,0,0,0,0,0,0,0)
 carry = 0
@@ -26,11 +29,34 @@ carry = 0
 rax = x8(0,0,0,0,0,0,0,0)
 rdi = ""
 
-VERSION = "alpha 0.0.4"
+SPECS = {
+    "CPU": {
+        "Name": "PyBit",
+        "IntSize": "x8",
+        "Hertz": "30Hz"
+    },
+    "GPU": {
+        "Name": "PyGraphic",
+        "IntSize": "x8",
+        "Hertz": "30Hz"
+    },
+    "Instruction set": {
+        "Name": "PB8 Assembly",
+        "Assembler": "Interpreted"
+    },
+    "Disk": {
+        "Name": "InfraDisk",
+        "Size": "Unbound",
+        "I/O Speed": "Unbound",
+        "System": "RiverCape Disk Technology"
+    }
+}
+
+VERSION = "halfdev 0.\u00BD.0"
 """The version"""
 LICENSE = "MIT License"
 """The license"""
-WELCOME_MSG = """\033[33;1;4mPyBit x8 ($version)\033[0m
+WELCOME_MSG = """\033[33;1;4mPyBit $cpu.intsize $cpu.hertz ($version)\033[0m
 \033[1m$license\033[0m"""
 """The message to be displayed in the bios
 
@@ -38,7 +64,7 @@ WELCOME_MSG = """\033[33;1;4mPyBit x8 ($version)\033[0m
 
 Supports ASCII colour codes (`\\033[XXXm`)"""
 def BIOS() -> None:
-    print(WELCOME_MSG.replace("$version", VERSION).replace("$license", LICENSE))
+    print(WELCOME_MSG.replace("$version", VERSION).replace("$license", LICENSE).replace("$cpu.intsize", SPECS["CPU"]["IntSize"]).replace("$cpu.hertz", SPECS["CPU"]["Hertz"]))
 
 CHARS = ' 0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!"£$%^&*()-+#~:;{}[]<>,./?\\|`¬¦\'\b\t\n\f\r '
 

@@ -9,8 +9,9 @@ class gpu:
         self.width, self.height = sizeX, sizeY
         self.screen = pygame.display.set_mode((self.width, self.height))
         pygame.display.flip()
-        pygame.display.set_caption("PyBit x8 GPU")
-        print("\033[32;1mSuccesfully started PyBit x8 GPU\033[0m")
+        name = "PyGraphics $gpu.intsize $gpu.hertz GPU".replace("$version", cpu.VERSION).replace("$gpu.intsize", cpu.SPECS["GPU"]["IntSize"]).replace("$gpu.hertz", cpu.SPECS["GPU"]["Hertz"])
+        pygame.display.set_caption(name)
+        print(f"\033[32;1mSuccesfully started {name}\033[0m")
 
     def tick(self, screen : list[cpu.x8]):
         i = -1
