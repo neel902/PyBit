@@ -28,13 +28,16 @@ class Flags:
         NO_UNDER = 24
 
 def prnExtra(text, *flags):
+    print(formatText(text, *flags))
+
+def formatText(text, *flags):
     ftext = f"{text}\033[0m"
     form = "\033["
     for flag in flags:
         form += str(flag) + ";"
     form = form[:-1] + "m"
     ftext = form + ftext
-    print(ftext)
+    return ftext
 
 def clearConsole():
     print("\n" * 50)
