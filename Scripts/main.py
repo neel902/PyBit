@@ -258,7 +258,7 @@ def run(codeRaw : str):
                         running = False
             dif = time.time() - start_time_update
             differences.append(dif)
-        print(f"Calculated frequency (+time: +accuracy): {1/(sum(iter(differences))/len(differences))}")
+        #print(f"Calculated frequency (+time: +accuracy): {1/(sum(iter(differences))/len(differences))}")
     else:
         pygame.quit()
 

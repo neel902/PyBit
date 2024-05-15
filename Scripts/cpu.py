@@ -36,7 +36,7 @@ SPECS = {
         "Hertz": "30Hz"
     },
     "GPU": {
-        "Name": "PyGraphic",
+        "Name": "PyGraphics Integrated",
         "IntSize": "x8",
         "Hertz": "30Hz"
     },

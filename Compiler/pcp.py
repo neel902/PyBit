@@ -3,6 +3,7 @@ from prnExtra import Flags
 import time
 import grammars
 import win32clipboard
+from pathlib import Path
 
 def setClipboard(text : str) -> None:
     win32clipboard.OpenClipboard()
@@ -33,16 +34,19 @@ def Tokens(text : str):
             if char in grammars.EOL:
                 if line.strip() == "":
                     continue
-                lines.append(line)
+                if line.strip()[0] != "/":
+                    lines.append(line)
                 line = ""
             else:
                 line += char
-    if line != "":
-        prnExtra.prnExtra("Tokenisation failed: EOL Error (Are you missing a semicolon?)", Flags.ConsoleColours.RED, Flags.ConsoleFonts.BOLD)
-        sys.exit()
-    if inString:
-        prnExtra.prnExtra("Tokenisation failed: EOF Error (Are you missing a quotation mark?)", Flags.ConsoleColours.RED, Flags.ConsoleFonts.BOLD)
-        sys.exit()
+    if line.strip().__len__() >= 1:
+        if line.strip()[0] != "/":
+            if line != "":
+                prnExtra.prnExtra("Tokenisation failed: EOL Error (Are you missing a semicolon?)", Flags.ConsoleColours.RED, Flags.ConsoleFonts.BOLD)
+                sys.exit()
+            if inString:
+                prnExtra.prnExtra("Tokenisation failed: EOF Error (Are you missing a quotation mark?)", Flags.ConsoleColours.RED, Flags.ConsoleFonts.BOLD)
+                sys.exit()
     return lines
 
 def Parse(tokens):
@@ -138,9 +142,16 @@ def compile(parsed):
         if inFunc:
             func.append(line)
             continue
+
+        # Deal with raw asm code
+        if line[0] == grammars.RAW_START:
+            start_section += "\n" + line[1]
+        if line[0] == grammars.RAW_DATA:
+            data_section += "\n" + line[1]
+
         # Deal with calling functions
         
-        ibFuncs = ["syscall", "print"]
+        ibFuncs = ["syscall", "print", "pixel", "image", "open", "close", "read", "write"]
         #print(line)
         if len(line) >= 2:
             
@@ -149,14 +160,65 @@ def compile(parsed):
                 # In built
                 funct = line[0][:-1]
                 if funct in ibFuncs:
-                    if funct == "syscall":
-                        start_section += "\nSYSCALL"
-                    if funct == "print":
-                        reg = line[1][:-1]
-                        if reg[1:] not in used_registries:
-                            used_registries.append(reg)
-                            data_section += f"\nREG {genHash(reg)} {reg}"
-                        start_section += f"\nOUT {genHash(reg)}"
+                    match funct:
+                        case "syscall":
+                            start_section += "\nSYSCALL"
+                        case "print":
+                            reg = line[1][:-1]
+                            if reg[1:] not in used_registries:
+                                used_registries.append(reg)
+                                data_section += f"\nREG {genHash(reg)} {reg}"
+                            start_section += f"\nOUT {genHash(reg)}"
+                        case "pixel":
+                            r = line[1][:-1]
+                            g = line[2][:-1]
+                            b = line[3][:-1]
+                            posX, posY = line[4][:-1], line[5][:-1]
+                            if r not in used_registries:
+                                used_registries.append(r)
+                                data_section += f"\nREG {genHash(r)} {r}"
+                            if g not in used_registries:
+                                used_registries.append(g)
+                                data_section += f"\nREG {genHash(g)} {g}"
+                            if b not in used_registries:
+                                used_registries.append(b)
+                                data_section += f"\nREG {genHash(b)} {b}"
+                            start_section += f"\nPXL {posX} {posY} {genHash(r)} {genHash(g)} {genHash(b)}"
+                        case "image":
+                            posX, posY = line[1][:-1], line[2][:-1]
+                            if posX not in used_registries:
+                                used_registries.append(posX)
+                                data_section += f"\nREG {genHash(posX)} {posX}"
+                            if posY not in used_registries:
+                                used_registries.append(posY)
+                                data_section += f"\nREG {genHash(posY)} {posY}"
+                            start_section += f"\nIMG {posX} {posY}"
+                        case "open":
+                            if "$rdi" not in used_registries:
+                                used_registries.append("$rdi")
+                                data_section += f"\nREG {genHash('$rdi')} $rdi"
+                            if "$rax" not in used_registries:
+                                used_registries.append("$rax")
+                                data_section += f"\nREG {genHash('$rax')} $rax"
+                            start_section += f"\nSET {genHash('$rdi')} 00000001\nSYSCALL"
+                        case "write":
+                            if "$rdi" not in used_registries:
+                                used_registries.append("$rdi")
+                                data_section += f"\nREG {genHash('$rdi')} $rdi"
+                            start_section += f"\nSET {genHash('$rdi')} 00000010\nSYSCALL"
+                        case "read":
+                            if "$rdi" not in used_registries:
+                                used_registries.append("$rdi")
+                                data_section += f"\nREG {genHash('$rdi')} $rdi"
+                            if "$rax" not in used_registries:
+                                used_registries.append("$rax")
+                                data_section += f"\nREG {genHash('$rax')} $rax"
+                            start_section += f"\nSET {genHash('$rdi')} 00000011\nSYSCALL"
+                        case "close":
+                            if "$rdi" not in used_registries:
+                                used_registries.append("$rdi")
+                                data_section += f"\nREG {genHash('$rdi')} $rdi"
+                            start_section += f"\nSET {genHash('$rdi')} 00000100\nSYSCALL"
                     continue
                     
                 # Custom functions
@@ -194,8 +256,9 @@ def compile(parsed):
 
 def main() -> None:
     if len(sys.argv) < 2:
-        print("Usage (With Compiler as current directory): python3 compile.py <file_name>")
+        print("Usage (With Compiler as current directory): python3 compile.py <file_name> *<flags: --create>")
     else:
+        create_file = "--create" in sys.argv or "-create" in sys.argv
         file_name = sys.argv[1]
         prnExtra.clearConsole()
         prnExtra.prnExtra("Compiling code...", Flags.ConsoleFonts.BOLD)
@@ -237,6 +300,20 @@ def main() -> None:
         print(code)
         setClipboard(code)
 
+        file_name
+
+        if create_file:
+            nFile_name = f"{file_name}.pb8"
+            try:
+                f = open(nFile_name, "w")
+                f.write(code)       
+            except Exception as e:
+                prnExtra.prnExtra(f"Error creating file: {e}", Flags.ConsoleColours.RED, Flags.ConsoleFonts.BOLD)
+            finally:
+                f.close()
+                prnExtra.prnExtra(f"Succesfully created file", Flags.ConsoleColours.GREEN, Flags.ConsoleFonts.BOLD)
+
 
 if __name__ == "__main__":
     main()
+    input(prnExtra.formatText("Copied code ", Flags.ConsoleColours.GREEN, Flags.ConsoleFonts.BOLD))

@@ -9,7 +9,7 @@ class gpu:
         self.width, self.height = sizeX, sizeY
         self.screen = pygame.display.set_mode((self.width, self.height))
         pygame.display.flip()
-        name = "PyGraphics $gpu.intsize $gpu.hertz GPU".replace("$version", cpu.VERSION).replace("$gpu.intsize", cpu.SPECS["GPU"]["IntSize"]).replace("$gpu.hertz", cpu.SPECS["GPU"]["Hertz"])
+        name = "$gpu.name $gpu.intsize $gpu.hertz GPU".replace("$gpu.name", cpu.SPECS["GPU"]["Name"]).replace("$version", cpu.VERSION).replace("$gpu.intsize", cpu.SPECS["GPU"]["IntSize"]).replace("$gpu.hertz", cpu.SPECS["GPU"]["Hertz"])
         pygame.display.set_caption(name)
         print(f"\033[32;1mSuccesfully started {name}\033[0m")
 

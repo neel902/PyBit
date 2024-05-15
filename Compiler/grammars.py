@@ -7,3 +7,6 @@ PAREN_START_CURLY = "{"
 PAREN_END_CURLY = "}"
 COMMA = ","
 REGISTRY_PREFIX = "$" # Only used when registry in x = y operation
+
+RAW_START = ":START"
+RAW_DATA = ":DATA"
