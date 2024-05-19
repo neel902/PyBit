@@ -1,0 +1,71 @@
+
+
+.frame1
+MOV onqoeymi gsvscuyk
+.frame2
+MOV prieypuw gsvscuyk
+.left
+SUB xztcnrfu rprmonin xztcnrfu
+.right
+ADD xztcnrfu rprmonin xztcnrfu
+.tick
+IFE rzwnqfnj frame1
+IFO rzwnqfnj frame2
+IMG 1 1
+MOV sdavtkvp gsvscuyk
+IMG xztcnrfu 60
+KEY tbohafgb
+IF= tbohafgb emnkfliz left
+IF= tbohafgb pfqizben right
+_data
+REG rzwnqfnj $clock
+REG nidpoajs $carry
+REG gsvscuyk $rdi
+REG onqoeymi $0000
+REG prieypuw $0001
+REG xztcnrfu $0011
+REG sdavtkvp $0010
+REG tbohafgb $1111
+REG emnkfliz $1100
+REG pfqizben $1101
+DISP
+REG emnkfliz $1100
+REG pfqizben $1101
+REG xztcnrfu $0011
+REG rprmonin $0100
+REG gsvscuyk $rdi
+REG exwhkvab $rax
+REG onqoeymi $0000
+REG prieypuw $0001
+REG sdavtkvp $0010
+_start
+SET emnkfliz 00001011
+SET pfqizben 00001110
+SET xztcnrfu 01001011
+SET rprmonin 00000100
+SSET gsvscuyk /assets/bg/frame1-img
+SET exwhkvab 00000001
+SYSCALL
+SET exwhkvab 00000011
+SYSCALL
+SET exwhkvab 00000100
+SYSCALL
+MOV gsvscuyk onqoeymi
+SSET gsvscuyk /assets/bg/frame2-img
+SET exwhkvab 00000001
+SYSCALL
+SET exwhkvab 00000011
+SYSCALL
+SET exwhkvab 00000100
+SYSCALL
+MOV gsvscuyk prieypuw
+SSET gsvscuyk /assets/car/frame1-img
+SET exwhkvab 00000001
+SYSCALL
+SET exwhkvab 00000011
+SYSCALL
+SET exwhkvab 00000100
+SYSCALL
+MOV gsvscuyk sdavtkvp
+_tick
+CALL tick
