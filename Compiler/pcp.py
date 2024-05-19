@@ -137,7 +137,7 @@ def compile(parsed):
                     data_section += "\n"+i
             func_section += f"\n.{funcName}{fCode}"
             inFunc = False
-            func = ""
+            func = []
             continue
         if inFunc:
             func.append(line)
@@ -151,7 +151,7 @@ def compile(parsed):
 
         # Deal with calling functions
         
-        ibFuncs = ["syscall", "print", "pixel", "image", "open", "close", "read", "write"]
+        ibFuncs = ["syscall", "print", "pixel", "image", "open", "close", "read", "write", "if", "else"]
         #print(line)
         if len(line) >= 2:
             
@@ -161,6 +161,17 @@ def compile(parsed):
                 funct = line[0][:-1]
                 if funct in ibFuncs:
                     match funct:
+                        case "if":
+                            condition = line[1][5]
+                            if line[1][:5][1:] not in used_registries:
+                                used_registries.append(line[1][:5])
+                                data_section += f"\nREG {genHash(line[1][:5])} {line[1][:5]}"
+                            if line[1][-6:-1][1:] not in used_registries:
+                                used_registries.append(line[1][-6:-1])
+                                data_section += f"\nREG {genHash(line[1][-6:-1])} {line[1][-6:-1]}"
+                            start_section += f"\nIF{condition} {genHash(line[1][:5])} {genHash(line[1][-6:-1])} {line[2][:-1]}"
+                        case "else":
+                            start_section += f" ELSE {line[1][:-1]}"
                         case "syscall":
                             start_section += "\nSYSCALL"
                         case "print":
@@ -281,7 +292,8 @@ def main() -> None:
         parsed = Parse(tokens)
 
         prnExtra.prnExtra(f"Done in {time.time() - start_time}", Flags.ConsoleColours.GREEN, Flags.ConsoleFonts.BOLD)
-
+        
+        print(parsed)
         prnExtra.prnExtra("Compiling", Flags.ConsoleColours.YELLOW, Flags.ConsoleFonts.BOLD)
 
         start_time = time.time()
