@@ -151,16 +151,26 @@ def compile(parsed):
 
         # Deal with calling functions
         
-        ibFuncs = ["syscall", "print", "pixel", "image", "open", "close", "read", "write", "if", "else"]
+        ibFuncs = ["syscall", "print", "pixel", "image", "open", "close", "read", "write", "if", "else", "image"]
         #print(line)
         if len(line) >= 2:
-            
-           
             if line[0][-1] == grammars.PAREN_START and line[-1][-1] == grammars.PAREN_END:
                 # In built
                 funct = line[0][:-1]
                 if funct in ibFuncs:
                     match funct:
+                        case "image":
+                            x = line[1][:-1]
+                            y = line[2][:-1]
+                            if x[1:] in REGLIST:
+                                if x[1:] not in used_registries:
+                                    used_registries.append(x)
+                                    data_section += f"\nREG {genHash(x)} {x}"
+                            if y[1:] in REGLIST:
+                                if y[1:] not in used_registries:
+                                    used_registries.append(y)
+                                    data_section += f"\nREG {genHash(y)} {y}"
+                            start_section += f"\nIMG {x} {y}"
                         case "if":
                             condition = line[1][5]
                             if line[1][:5][1:] not in used_registries:
