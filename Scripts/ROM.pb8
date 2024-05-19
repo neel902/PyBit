@@ -1,62 +1,71 @@
 
-:: methods for frames
+
 .frame1
-MOV bg1 rdi
+MOV onqoeymi gsvscuyk
 .frame2
-MOV bg2 rdi
-:: called every tick
-.tick
-IFE clock frame1
-IFO clock frame2
-IMG 1 1
-MOV car rdi
-IMG pos 60
-:: movement
-KEY kd
-IF= kd a right
-IF= kd d left
+MOV prieypuw gsvscuyk
 .left
-ADD pos const pos 
+SUB xztcnrfu rprmonin xztcnrfu
 .right
-SUB pos const pos
-:: load a file
-.load
-SET rax 00000001
-SYSCALL
-SET rax 00000011
-SYSCALL
-SET rax 00000100
-SYSCALL
-:: data section
+ADD xztcnrfu rprmonin xztcnrfu
+.tick
+IFE rzwnqfnj frame1
+IFO rzwnqfnj frame2
+IMG 1 1
+MOV sdavtkvp gsvscuyk
+IMG xztcnrfu 60
+KEY tbohafgb
+IF= tbohafgb emnkfliz left
+IF= tbohafgb pfqizben right
 _data
-REG rax $rax
-REG rdi $rdi
-REG bg1 $0000
-REG bg2 $1111
-REG car $0010
-:: speed
-REG const $0001
-REG clock $clock
-REG pos $0100
-REG kd $0111
-REG a $1001
-REG d $1010
-LTR a a
-LTR d d
+REG rzwnqfnj $clock
+REG nidpoajs $carry
+REG gsvscuyk $rdi
+REG onqoeymi $0000
+REG prieypuw $0001
+REG xztcnrfu $0011
+REG sdavtkvp $0010
+REG tbohafgb $1111
+REG emnkfliz $1100
+REG pfqizben $1101
 DISP
-:: start section
+REG emnkfliz $1100
+REG pfqizben $1101
+REG xztcnrfu $0011
+REG rprmonin $0100
+REG gsvscuyk $rdi
+REG exwhkvab $rax
+REG onqoeymi $0000
+REG prieypuw $0001
+REG sdavtkvp $0010
 _start
-SET pos 01001011
-SET const 00000100
-SSET rdi /assets/bg/frame1-img
-CALL load
-MOV rdi bg1
-SSET rdi /assets/bg/frame2-img
-CALL load
-MOV rdi bg2
-SSET rdi /assets/car/frame1-img
-CALL load
-MOV rdi car
-:: tick section
+SET emnkfliz 00001011
+SET pfqizben 00001110
+SET xztcnrfu 01001011
+SET rprmonin 00000100
+SSET gsvscuyk /assets/bg/frame1-img
+SET exwhkvab 00000001
+SYSCALL
+SET exwhkvab 00000011
+SYSCALL
+SET exwhkvab 00000100
+SYSCALL
+MOV gsvscuyk onqoeymi
+SSET gsvscuyk /assets/bg/frame2-img
+SET exwhkvab 00000001
+SYSCALL
+SET exwhkvab 00000011
+SYSCALL
+SET exwhkvab 00000100
+SYSCALL
+MOV gsvscuyk prieypuw
+SSET gsvscuyk /assets/car/frame1-img
+SET exwhkvab 00000001
+SYSCALL
+SET exwhkvab 00000011
+SYSCALL
+SET exwhkvab 00000100
+SYSCALL
+MOV gsvscuyk sdavtkvp
 _tick
 CALL tick

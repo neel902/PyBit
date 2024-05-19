@@ -110,7 +110,7 @@ REGLIST = [f"{i1}{i2}{i3}{i4}" for i1 in range(0,2) for i2 in range(0,2) for i3 
 REGLIST.append("rax")
 REGLIST.append("rdi")
 def compile(parsed):
-    data_section = ""
+    data_section = f'\nREG {genHash("$clock")} $clock\nREG {genHash("$carry")} $carry'
     start_section = ""
     func_section = ""
     used_registries = []
@@ -151,7 +151,7 @@ def compile(parsed):
 
         # Deal with calling functions
         
-        ibFuncs = ["syscall", "print", "pixel", "image", "open", "close", "read", "write", "if", "else", "image"]
+        ibFuncs = ["syscall", "print", "pixel", "image", "open", "close", "read", "write", "if", "else", "image", "if:even", "if:odd", "key", "display"]
         #print(line)
         if len(line) >= 2:
             if line[0][-1] == grammars.PAREN_START and line[-1][-1] == grammars.PAREN_END:
@@ -159,6 +159,14 @@ def compile(parsed):
                 funct = line[0][:-1]
                 if funct in ibFuncs:
                     match funct:
+                        case "display":
+                            data_section += "\nDISP"
+                        case "key":
+                            start_section += f"\nKEY {genHash(line[1][:-1])}"
+                        case "if:even":
+                            start_section += f"\nIFE {genHash(line[1][:-1])} {line[2][:-1]}"
+                        case "if:odd":
+                            start_section += f"\nIFO {genHash(line[1][:-1])} {line[2][:-1]}"
                         case "image":
                             x = line[1][:-1]
                             y = line[2][:-1]
@@ -166,13 +174,15 @@ def compile(parsed):
                                 if x[1:] not in used_registries:
                                     used_registries.append(x)
                                     data_section += f"\nREG {genHash(x)} {x}"
+                                x = genHash(x)
                             if y[1:] in REGLIST:
                                 if y[1:] not in used_registries:
                                     used_registries.append(y)
                                     data_section += f"\nREG {genHash(y)} {y}"
+                                y = genHash(y)
                             start_section += f"\nIMG {x} {y}"
                         case "if":
-                            condition = line[1][5]
+                            condition = line[1][5].replace("@", "=")
                             if line[1][:5][1:] not in used_registries:
                                 used_registries.append(line[1][:5])
                                 data_section += f"\nREG {genHash(line[1][:5])} {line[1][:5]}"
@@ -221,12 +231,12 @@ def compile(parsed):
                             if "$rax" not in used_registries:
                                 used_registries.append("$rax")
                                 data_section += f"\nREG {genHash('$rax')} $rax"
-                            start_section += f"\nSET {genHash('$rdi')} 00000001\nSYSCALL"
+                            start_section += f"\nSET {genHash('$rax')} 00000001\nSYSCALL"
                         case "write":
                             if "$rdi" not in used_registries:
                                 used_registries.append("$rdi")
                                 data_section += f"\nREG {genHash('$rdi')} $rdi"
-                            start_section += f"\nSET {genHash('$rdi')} 00000010\nSYSCALL"
+                            start_section += f"\nSET {genHash('$rax')} 00000010\nSYSCALL"
                         case "read":
                             if "$rdi" not in used_registries:
                                 used_registries.append("$rdi")
@@ -234,12 +244,12 @@ def compile(parsed):
                             if "$rax" not in used_registries:
                                 used_registries.append("$rax")
                                 data_section += f"\nREG {genHash('$rax')} $rax"
-                            start_section += f"\nSET {genHash('$rdi')} 00000011\nSYSCALL"
+                            start_section += f"\nSET {genHash('$rax')} 00000011\nSYSCALL"
                         case "close":
                             if "$rdi" not in used_registries:
                                 used_registries.append("$rdi")
                                 data_section += f"\nREG {genHash('$rdi')} $rdi"
-                            start_section += f"\nSET {genHash('$rdi')} 00000100\nSYSCALL"
+                            start_section += f"\nSET {genHash('$rax')} 00000100\nSYSCALL"
                     continue
                     
                 # Custom functions
@@ -307,6 +317,7 @@ def main() -> None:
         prnExtra.prnExtra("Compiling", Flags.ConsoleColours.YELLOW, Flags.ConsoleFonts.BOLD)
 
         start_time = time.time()
+        compile(parsed)
         try:
             compiled = compile(parsed)
             code = f"\n{compiled[2]}\n_data{compiled[0]}"

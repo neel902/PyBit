@@ -300,17 +300,10 @@ def cleanup(reduced_debug=True) -> None:
         if not reduced_debug:
             print(f"\033[91;1mFailed to clear binary memory: {e}\033[0m")
 
-test = """
-_data
-DISP
-_tick
-:: pass
-"""
-
 if __name__ == "__main__":
     BIOS()
     real_path = os.path.realpath(__file__)
     dir_path = os.path.dirname(real_path)
     with open(dir_path + "\\ROM.pb8") as f:
-        run(test)#f"\n{f.read()}\n")
+        run(f"\n{f.read()}\n")
     cleanup(reduced_debug=False)
