@@ -208,9 +208,24 @@ def getFunctions(code : str) -> dict[str, str]:
     return result
 
 file_descriptor = ""
+link = ""
+
+#SYSCALL IDS HELP (DO NOT EDIT, THIS IS JUST FOR QOL)
+{
+    "00000001" : "open",
+    "00000010" : "write",
+    "00000011" : "read",
+    "00000100" : "close",
+    "00000101" : "request",
+    "00000110" : "read (link)"
+}
+
+import urllib
+import urllib.request
 
 def sysCall():
-    global rax, rdi, file_descriptor
+    global rax, rdi, file_descriptor, link
+    # file access
     if rax == x8(0,0,0,0,0,0,0,1):
         file_descriptor = rdi
     if rax == x8(0,0,0,0,0,0,1,0):
@@ -219,6 +234,20 @@ def sysCall():
         rdi = disks.getFile(file_descriptor)
     if rax == x8(0,0,0,0,0,1,0,0):
         file_descriptor = ""
+    # web access
+    if rax == x8(0,0,0,0,0,1,0,1):
+        link = rdi
+    if rax == x8(0,0,0,0,0,1,1,0):
+        u2 = urllib.request.urlopen(link)
+        lines = u2.readlines()
+        u2.close()
+        ms = ""
+        for i in lines:
+            a1 = "'"
+            ms += f"{str(i).removeprefix('b' + a1).removesuffix(a1)}"
+        rdi = (ms.replace("\\n", "\n").replace("\\t", "\t"))
+
+
 
 def main() -> None:
     BIOS()

@@ -151,7 +151,7 @@ def compile(parsed):
 
         # Deal with calling functions
         
-        ibFuncs = ["syscall", "print", "pixel", "image", "open", "close", "read", "write", "if", "else", "image", "if:even", "if:odd", "key", "display"]
+        ibFuncs = ["syscall", "print", "pixel", "image", "open", "close", "read", "write", "if", "else", "image", "if:even", "if:odd", "key", "display", "web.request", "web.read"]
         #print(line)
         if len(line) >= 2:
             if line[0][-1] == grammars.PAREN_START and line[-1][-1] == grammars.PAREN_END:
@@ -159,6 +159,7 @@ def compile(parsed):
                 funct = line[0][:-1]
                 if funct in ibFuncs:
                     match funct:
+                        
                         case "display":
                             data_section += "\nDISP"
                         case "key":
@@ -224,6 +225,22 @@ def compile(parsed):
                                 used_registries.append(posY)
                                 data_section += f"\nREG {genHash(posY)} {posY}"
                             start_section += f"\nIMG {posX} {posY}"
+                        case "web.read":
+                            if "$rdi" not in used_registries:
+                                used_registries.append("$rdi")
+                                data_section += f"\nREG {genHash('$rdi')} $rdi"
+                            if "$rax" not in used_registries:
+                                used_registries.append("$rax")
+                                data_section += f"\nREG {genHash('$rax')} $rax"
+                            start_section += f"\nSET {genHash('$rax')} 00000110\nSYSCALL"
+                        case "web.request":
+                            if "$rdi" not in used_registries:
+                                used_registries.append("$rdi")
+                                data_section += f"\nREG {genHash('$rdi')} $rdi"
+                            if "$rax" not in used_registries:
+                                used_registries.append("$rax")
+                                data_section += f"\nREG {genHash('$rax')} $rax"
+                            start_section += f"\nSET {genHash('$rax')} 00000101\nSYSCALL"
                         case "open":
                             if "$rdi" not in used_registries:
                                 used_registries.append("$rdi")
