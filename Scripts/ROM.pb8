@@ -7,7 +7,7 @@ REG exwhkvab $rax
 REG gsvscuyk $rdi
 REG gsvscuyk $rdi
 _start
-SSET gsvscuyk https://www.google.com
+SSET gsvscuyk localpb://test.com/
 SET exwhkvab 00000101
 SYSCALL
 SET exwhkvab 00000110

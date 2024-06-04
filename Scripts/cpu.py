@@ -222,6 +222,26 @@ link = ""
 
 import urllib
 import urllib.request
+import os
+
+real_path = os.path.realpath(__file__)
+dir_path = os.path.dirname(real_path)
+hostPath = os.path.dirname(dir_path) + "\\hostingLocal"
+
+def urlRead(link) -> str:
+    global hostPath
+    if link.split("/")[0] == "localpb:":
+        with open(hostPath + "\\".join(link.split("/")[1:])[:-1]) as f:
+            l = f.read()
+        return l
+    u2 = urllib.request.urlopen(link)
+    lines = u2.readlines()
+    u2.close()
+    ms = ""
+    for i in lines:
+        a1 = "'"
+        ms += f"{str(i).removeprefix('b' + a1).removesuffix(a1)}"
+    return (ms.replace("\\n", "\n").replace("\\t", "\t"))
 
 def sysCall():
     global rax, rdi, file_descriptor, link
@@ -238,14 +258,15 @@ def sysCall():
     if rax == x8(0,0,0,0,0,1,0,1):
         link = rdi
     if rax == x8(0,0,0,0,0,1,1,0):
-        u2 = urllib.request.urlopen(link)
-        lines = u2.readlines()
-        u2.close()
-        ms = ""
-        for i in lines:
-            a1 = "'"
-            ms += f"{str(i).removeprefix('b' + a1).removesuffix(a1)}"
-        rdi = (ms.replace("\\n", "\n").replace("\\t", "\t"))
+        rdi = urlRead(link)
+        #u2 = urllib.request.urlopen(link)
+        #lines = u2.readlines()
+        #u2.close()
+        #ms = ""
+        #for i in lines:
+        #    a1 = "'"
+        #    ms += f"{str(i).removeprefix('b' + a1).removesuffix(a1)}"
+        #rdi = (ms.replace("\\n", "\n").replace("\\t", "\t"))
 
 
 
