@@ -151,7 +151,7 @@ def compile(parsed):
 
         # Deal with calling functions
         
-        ibFuncs = ["syscall", "print", "pixel", "image", "open", "close", "read", "write", "if", "else", "image", "if:even", "if:odd", "key", "display", "web.request", "web.read"]
+        ibFuncs = ["syscall", "print", "pixel", "image", "open", "close", "read", "write", "if", "else", "image", "if:even", "if:odd", "key", "display", "web.request", "web.read", "font.text"]
         #print(line)
         if len(line) >= 2:
             if line[0][-1] == grammars.PAREN_START and line[-1][-1] == grammars.PAREN_END:
@@ -216,6 +216,13 @@ def compile(parsed):
                                 used_registries.append(b)
                                 data_section += f"\nREG {genHash(b)} {b}"
                             start_section += f"\nPXL {posX} {posY} {genHash(r)} {genHash(g)} {genHash(b)}"
+                        case "font.text":
+                            charAdr = line[1][:-1]
+                            posX, posY = line[2][:-1], line[3][:-1]
+                            if charAdr not in used_registries:
+                                used_registries.append(r)
+                                data_section += f"\nREG {genHash(r)} {r}"
+                            start_section += f"\nFTXT {posX} {posY} {genHash(charAdr)}"
                         case "image":
                             posX, posY = line[1][:-1], line[2][:-1]
                             if posX not in used_registries:

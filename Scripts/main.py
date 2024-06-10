@@ -4,6 +4,7 @@ from disks import *
 import keyboard
 import time
 import sys
+import Font
 
 variables = {}
 functions = {}
@@ -151,6 +152,10 @@ def sec(line):
                 if l in variables.keys():
                     l = variables[l]
                 setReg(variables[line[1]][1:], x8(*[int(i) for i in l]))
+            case "char":
+                index = getReg(variables[line[2]][1:])
+                string = getReg(variables[line[1]][1:])
+                setReg(variables[line[3]][1:], string[index])
             case "sset":
                 l = " ".join(line[2:])
                 if l in variables.keys():
@@ -164,8 +169,43 @@ def sec(line):
             case "syscall":
                 sysCall()
             case "pxl":
-                pos = int(line[1]) + (150 * (int(line[2]))) - 1
+                sx = line[1]
+                sy = line[2]
+                if sx in variables:
+                    sx = x8ToNum(getReg(variables[sx][1:]))
+                if sy in variables:
+                    sy = x8ToNum(getReg(variables[sy][1:]))
+                pos = int(sx) + (150 * (int(sy))) - 1
                 disp[pos] = (getReg(variables[line[3]][1:]), getReg(variables[line[4]][1:]), getReg(variables[line[5]][1:]))
+            case "ftxt":
+                sx = line[1]
+                sy = line[2]
+                if sx in variables:
+                    sx = x8ToNum(getReg(variables[sx][1:]))
+                if sy in variables:
+                    sy = x8ToNum(getReg(variables[sy][1:]))
+                col = getReg(variables[line[4]][1:]) if len(line) > 4 else x8()
+                origin = int(sx) + (150 * (int(sy))) - 1
+                sent = getReg(variables[line[3]][1:])
+                FontLookupTable = Font.LookUp
+                for charC in sent:
+                    char = charC.lower()
+                    FontImage = FontLookupTable[char] if char in FontLookupTable else FontLookupTable["UNKNOWN"]
+                    pos = 0
+                    offset = 0
+                    for x in range(6):
+                        for y in range(6):
+                            Col1 = col if FontImage[pos] == 1 else x8(0,0,0,0,0,0,0,0)
+                            Col2 = Col1
+                            Col3 = Col1
+                            if (len(disp) > origin+offset) and Col1 != x8(0,0,0,0,0,0,0,0):
+                                disp[(offset+origin)] = (Col1, Col2, Col3)
+
+                            pos += 1
+                            offset += 1
+                            if pos >= 36: pos -= 36
+                        offset += 150 - y - 1
+                    origin += 6
             case "img":
                 OimgData = getReg("rdi")
                 OimgData = OimgData.replace("\n", "").replace(" ", "").split("-")

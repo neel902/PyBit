@@ -256,7 +256,7 @@ def sysCall():
         file_descriptor = ""
     # web access
     if rax == x8(0,0,0,0,0,1,0,1):
-        link = rdi
+        link = rdi.replace("@", ".")
     if rax == x8(0,0,0,0,0,1,1,0):
         rdi = urlRead(link)
         #u2 = urllib.request.urlopen(link)

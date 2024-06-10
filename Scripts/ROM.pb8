@@ -1,15 +1,13 @@
-
-
 _data
-REG rzwnqfnj $clock
-REG nidpoajs $carry
-REG exwhkvab $rax
-REG gsvscuyk $rdi
-REG gsvscuyk $rdi
+DISP
+REG rdi $rdi
+REG rax $rax
 _start
-SSET gsvscuyk localpb://test.com/
-SET exwhkvab 00000101
+SSET rdi localpb://test@com/
+SET rax 00000101
 SYSCALL
-SET exwhkvab 00000110
+SET rax 00000110
 SYSCALL
-OUT gsvscuyk
+OUT rdi
+_tick
+FTXT 15 15 rdi
