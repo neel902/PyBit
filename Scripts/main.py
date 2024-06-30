@@ -88,6 +88,9 @@ def sec(line):
             case "if=":
                 if x8ToNum(getReg((variables[line[1]][1:]))) == int(str(getReg((variables[line[2]][1:]))), 2):
                     call(line[3])
+            case "ifr":
+                if random.randint(0,1) == 0:
+                    call(line[1])
             case "exit":
                 sys.exit()
             case "add":

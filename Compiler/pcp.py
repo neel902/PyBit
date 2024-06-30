@@ -151,7 +151,7 @@ def compile(parsed):
 
         # Deal with calling functions
         
-        ibFuncs = ["syscall", "print", "pixel", "image", "open", "close", "read", "write", "if", "else", "image", "if:even", "if:odd", "key", "display", "web.request", "web.read", "font.text"]
+        ibFuncs = ["rndm", "syscall", "print", "pixel", "image", "open", "close", "read", "write", "if", "else", "image", "if:even", "if:odd", "key", "display", "web.request", "web.read", "font.text"]
         #print(line)
         if len(line) >= 2:
             if line[0][-1] == grammars.PAREN_START and line[-1][-1] == grammars.PAREN_END:
@@ -159,7 +159,8 @@ def compile(parsed):
                 funct = line[0][:-1]
                 if funct in ibFuncs:
                     match funct:
-                        
+                        case "rndm":
+                            start_section += f"\nIFR {line[1][:-1]}"
                         case "display":
                             data_section += "\nDISP"
                         case "key":
@@ -183,14 +184,17 @@ def compile(parsed):
                                 y = genHash(y)
                             start_section += f"\nIMG {x} {y}"
                         case "if":
-                            condition = line[1][5].replace("@", "=")
-                            if line[1][:5][1:] not in used_registries:
-                                used_registries.append(line[1][:5])
-                                data_section += f"\nREG {genHash(line[1][:5])} {line[1][:5]}"
-                            if line[1][-6:-1][1:] not in used_registries:
-                                used_registries.append(line[1][-6:-1])
-                                data_section += f"\nREG {genHash(line[1][-6:-1])} {line[1][-6:-1]}"
-                            start_section += f"\nIF{condition} {genHash(line[1][:5])} {genHash(line[1][-6:-1])} {line[2][:-1]}"
+                            condition = line[1][0].replace("@", "=")
+                            reg1 = line[2][:-1]
+                            reg2 = line[3][:-1]
+                            print(f"{condition=}, {reg1=}, {reg2=}")
+                            if reg1 not in used_registries:
+                                used_registries.append(reg1)
+                                data_section += f"\nREG {genHash(reg1)} {reg1}"
+                            if reg2 not in used_registries:
+                                used_registries.append(reg2)
+                                data_section += f"\nREG {genHash(reg2)} {reg2}"
+                            start_section += f"\nIF{condition} {genHash(reg1)} {genHash(reg2)} {line[4][:-1]}"
                         case "else":
                             start_section += f" ELSE {line[1][:-1]}"
                         case "syscall":
@@ -356,7 +360,7 @@ def main() -> None:
 
         print(code)
         setClipboard(code)
-
+        input(prnExtra.formatText("Copied code ", Flags.ConsoleColours.GREEN, Flags.ConsoleFonts.BOLD))
         file_name
 
         if create_file:
@@ -373,4 +377,4 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-    input(prnExtra.formatText("Copied code ", Flags.ConsoleColours.GREEN, Flags.ConsoleFonts.BOLD))
+    

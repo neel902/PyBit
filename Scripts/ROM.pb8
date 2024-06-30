@@ -1,13 +1,135 @@
+
+
+.frame1
+MOV onqoeymi gsvscuyk
+.frame2
+MOV prieypuw gsvscuyk
+ADD iatewhmw qocqduau iatewhmw
+.left
+SUB xztcnrfu rprmonin xztcnrfu
+.right
+ADD xztcnrfu rprmonin xztcnrfu
+.summon
+IFR random2
+IFR random2
+IFR random2
+IFR random2
+IFR random2
+IFR random2
+IFR random2
+IFR random2
+IFR random4
+IFR random4
+IFR random4
+IFR random4
+IFR random3
+IFR random3
+IFR random1
+MOV gsvscuyk aaycdzky
+SET iatewhmw 00000000
+.tempNest1
+SET gsvscuyk 01011010
+IF< iatewhmw gsvscuyk tempNest2
+.tempNest2
+SET gsvscuyk 00100010
+SUB aaycdzky xztcnrfu exwhkvab
+IF< exwhkvab gsvscuyk die
+SET gsvscuyk 00000000
+SUB gsvscuyk exwhkvab exwhkvab
+IF< exwhkvab gsvscuyk die
+.die
+exit
+.random1
+SET gsvscuyk 01001011
+.random2
+SET gsvscuyk 00111011
+.random3
+SET gsvscuyk 01100000
+.random4
+SET gsvscuyk 00100000
+.tick
+IFE rzwnqfnj frame1
+IFO rzwnqfnj frame2
+IMG 1 1
+MOV sdavtkvp gsvscuyk
+IMG xztcnrfu 60
+KEY tbohafgb
+IF= tbohafgb emnkfliz left
+IF= tbohafgb pfqizben right
+SET exwhkvab 00000010
+IF= rzwnqfnj exwhkvab summon
+MOV aneqkgga gsvscuyk
+IMG aaycdzky iatewhmw
+SET gsvscuyk 00111100
+IF> iatewhmw gsvscuyk tempNest1
 _data
+REG rzwnqfnj $clock
+REG nidpoajs $carry
+REG gsvscuyk $rdi
+REG onqoeymi $0000
+REG prieypuw $0001
+REG iatewhmw $0111
+REG xztcnrfu $0011
+REG aaycdzky $0110
+REG exwhkvab $rax
+REG sdavtkvp $0010
+REG tbohafgb $1111
+REG emnkfliz $1100
+REG pfqizben $1101
+REG aneqkgga $1010
+REG aaycdzky $0110
+REG iatewhmw $0111
+REG qocqduau $1110
 DISP
-REG rdi $rdi
-REG rax $rax
+REG emnkfliz $1100
+REG pfqizben $1101
+REG xztcnrfu $0011
+REG rprmonin $0100
+REG gsvscuyk $rdi
+REG exwhkvab $rax
+REG onqoeymi $0000
+REG prieypuw $0001
+REG sdavtkvp $0010
+REG aneqkgga $1010
 _start
-SSET rdi localpb://test@com/
-SET rax 00000101
+SET aaycdzky 01001011
+SET iatewhmw 00000000
+SET qocqduau 00000110
+SET emnkfliz 00001011
+SET pfqizben 00001110
+SET xztcnrfu 01001011
+SET rprmonin 00000100
+SSET gsvscuyk /assets/bg/frame1-img
+SET exwhkvab 00000001
 SYSCALL
-SET rax 00000110
+SET exwhkvab 00000011
 SYSCALL
-OUT rdi
+SET exwhkvab 00000100
+SYSCALL
+MOV gsvscuyk onqoeymi
+SSET gsvscuyk /assets/bg/frame2-img
+SET exwhkvab 00000001
+SYSCALL
+SET exwhkvab 00000011
+SYSCALL
+SET exwhkvab 00000100
+SYSCALL
+MOV gsvscuyk prieypuw
+SSET gsvscuyk /assets/car/frame1-img
+SET exwhkvab 00000001
+SYSCALL
+SET exwhkvab 00000011
+SYSCALL
+SET exwhkvab 00000100
+SYSCALL
+MOV gsvscuyk sdavtkvp
+SSET gsvscuyk /assets/spike-img
+SET exwhkvab 00000001
+SYSCALL
+SET exwhkvab 00000011
+SYSCALL
+SET exwhkvab 00000100
+SYSCALL
+MOV gsvscuyk aneqkgga
 _tick
-FTXT 15 15 rdi
+CALL tick
