@@ -16,6 +16,25 @@ class x8:
 def x8ToNum(CODE):
     return CODE.b1 * 2**7 + CODE.b2 * 2**6 + CODE.b3 * 2**5 + CODE.b4 * 2**4 + CODE.b5 * 2**3 + CODE.b6 * 2**2 + CODE.b7 * 2 + CODE.b8
 
+def decode(msg, data):
+    result = ""
+    spal = msg.split("$")
+    for i in spal:
+        if i != "":
+            if i[0] == "%":
+                if "." in i:
+                    ssp = i[1:].split(".")
+                    current = data
+                    for i2 in ssp:
+                        current = current[i2]
+                    result += current
+                else:
+                    result += data[i[1:]]
+            else:
+                result += i
+
+    return(result)
+
 memLen = 2**4
 binMemLen = 2**8
 
@@ -48,23 +67,30 @@ SPECS = {
         "Name": "InfraDisk",
         "Size": "Unbound",
         "I/O Speed": "Unbound",
-        "System": "RiverCape Disk Technology"
+        "System": "Pinthon"
     }
 }
 
-VERSION = "halfdev 0.\u00BD.0"
+VERSION = "halfdev 0.\u00BD.1"
 """The version"""
 LICENSE = "MIT License"
 """The license"""
-WELCOME_MSG = """\033[33;1;4mPyBit $cpu.intsize $cpu.hertz ($version)\033[0m
-\033[1m$license\033[0m"""
+
+DATA = SPECS
+DATA.update({"version": VERSION, "license": LICENSE})
+
+WELCOME_MSG = """\033[33;1;4mPyBit $%CPU.IntSize$ $%CPU.Hertz$ ($%version$)\033[0m
+\033[1m$%license$\033[0m"""
+
 """The message to be displayed in the bios
 
-`$version` will be replaced with the version and `$license` will be replaced with the license
+$%variable$ will be replaced with the variable
 
 Supports ASCII colour codes (`\\033[XXXm`)"""
 def BIOS() -> None:
-    print(WELCOME_MSG.replace("$version", VERSION).replace("$license", LICENSE).replace("$cpu.intsize", SPECS["CPU"]["IntSize"]).replace("$cpu.hertz", SPECS["CPU"]["Hertz"]))
+    DATA = SPECS
+    DATA.update({"version": VERSION, "license": LICENSE})
+    print(decode(WELCOME_MSG, DATA))
 
 CHARS = ' 0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!"£$%^&*()-+#~:;{}[]<>,./?\\|`¬¦\'\b\t\n\f\r '
 
