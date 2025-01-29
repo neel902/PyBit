@@ -25,15 +25,7 @@ The PyBit VM is designed to execute a custom assembly language, enabling users t
 
 ## PB8 ASM Instruction Set
 
-The PB8 ASM instruction set includes various commands that can be used to manipulate data, control program flow, and interact with the virtual environment. Here is a general instruction set:
-
-- **LOAD**: Load a value into a register.
-- **STORE**: Store a value from a register into memory.
-- **ADD**: Add two values and store the result in a register.
-- **SUB**: Subtract one value from another.
-- **JUMP**: Jump to a specified instruction address.
-- **CALL**: Call a subroutine.
-- **RETURN**: Return from a subroutine.
+The PB8 ASM instruction set includes various commands that can be used to manipulate data, control program flow, and interact with the virtual environment.
 
 ## Usage
 
